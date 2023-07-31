@@ -37,7 +37,11 @@ class PrototypesController < ApplicationController
   end
 
   def destroy
-    if @prototype.destroy
+    @prototype = Prototype.find(params[:id])
+    if current_user == @prototype.user
+      # プロトタイプに紐づくコメントも同時に削除
+      @prototype.comments.destroy_all
+      @prototype.destroy
       redirect_to root_path
     else
       redirect_to root_path
